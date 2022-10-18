@@ -1,4 +1,4 @@
-public class AwsCloudClient {
+public class AwsCloudClient implements ICloudClient{
     private AwsDataObjectHelperImpl dataObjectHelper;
     private AwsLabelDetectorHelperImpl labelDetectorHelper;
 

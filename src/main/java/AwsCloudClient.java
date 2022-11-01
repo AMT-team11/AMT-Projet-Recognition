@@ -4,28 +4,21 @@ import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.Bucket;
 
 public class AwsCloudClient implements ICloudClient{
-    private AwsDataObjectHelperImpl dataObjectHelper;
-    private AwsLabelDetectorHelperImpl labelDetectorHelper;
-
-    static AwsCloudClient instance;
+    private final Regions regions = Regions.EU_WEST_2;
+    private final String profile = "default";
+    private BucketHelper dataObjectHelper;
+    private ImageHelper labelDetectorHelper;
+    private static AwsCloudClient instance;
 
     AwsCloudClient(){
-        this.dataObjectHelper = new AwsDataObjectHelperImpl();
-        this.labelDetectorHelper = new AwsLabelDetectorHelperImpl();
+        this.dataObjectHelper = new BucketHelper(regions, profile);
+        this.labelDetectorHelper = new ImageHelper(regions, profile);
     }
 
-    public AwsCloudClient getInstance(){
-        if(instance == null){
+    public static AwsCloudClient getInstance(){
+        if (instance == null) {
             instance = new AwsCloudClient();
-            return instance;
-        } else {
-            return instance;
         }
+        return instance;
     }
-
-    public Bucket getBucket(String bucketName){
-        final AmazonS3 s3 = AmazonS3ClientBuilder.standard().withRegion(Regions.EU_WEST_2).build();
-        return s3.listBuckets().stream().filter(b -> b.getName().equals(bucketName)).findFirst().get();
-    }
-
 }

@@ -9,7 +9,7 @@ import java.util.Base64;
 public class BucketHelper implements IDataObjectHelper{
     private Bucket bucket;
     private Object object;
-    private AmazonS3 s3Client;
+    private final AmazonS3 s3Client;
 
     BucketHelper(Regions regions, String profile){
         this.s3Client = AmazonS3ClientBuilder.standard()

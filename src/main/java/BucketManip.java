@@ -1,13 +1,10 @@
-import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
-import com.amazonaws.services.s3.model.AccessControlList;
-import com.amazonaws.services.s3.model.AmazonS3Exception;
 import com.amazonaws.services.s3.model.Bucket;
 
-import static com.amazonaws.regions.Regions.EU_WEST_2;
-
 import java.util.List;
+
+import static com.amazonaws.regions.Regions.EU_WEST_2;
 
 public class BucketManip {
     public static void main(String[] args) {

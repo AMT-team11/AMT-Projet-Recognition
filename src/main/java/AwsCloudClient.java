@@ -9,8 +9,6 @@ public class AwsCloudClient implements ICloudClient{
 
     static AwsCloudClient instance;
 
-
-
     AwsCloudClient(){
         this.dataObjectHelper = new BucketHelper();
         this.labelDetectorHelper = new ImageHelper();

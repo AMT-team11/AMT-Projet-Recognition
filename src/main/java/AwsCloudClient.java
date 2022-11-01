@@ -4,6 +4,8 @@ import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.Bucket;
 
 public class AwsCloudClient implements ICloudClient{
+
+    private AmazonS3 s3;
     private AwsDataObjectHelperImpl dataObjectHelper;
     private AwsLabelDetectorHelperImpl labelDetectorHelper;
 
@@ -12,6 +14,8 @@ public class AwsCloudClient implements ICloudClient{
     AwsCloudClient(){
         this.dataObjectHelper = new AwsDataObjectHelperImpl();
         this.labelDetectorHelper = new AwsLabelDetectorHelperImpl();
+        // Connects to AWS with default credentials
+        s3 = AmazonS3ClientBuilder.standard().withRegion(Regions.EU_WEST_2).build();
     }
 
     public AwsCloudClient getInstance(){
@@ -24,8 +28,6 @@ public class AwsCloudClient implements ICloudClient{
     }
 
     public Bucket getBucket(String bucketName){
-        final AmazonS3 s3 = AmazonS3ClientBuilder.standard().withRegion(Regions.EU_WEST_2).build();
         return s3.listBuckets().stream().filter(b -> b.getName().equals(bucketName)).findFirst().get();
     }
-
 }

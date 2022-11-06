@@ -11,6 +11,8 @@ public class BucketHelper implements IDataObjectHelper{
     private Object object;
     private final AmazonS3 s3Client;
 
+    private String bucketName = "amt.team11.diduno.education";
+
     BucketHelper(Regions regions, String profile){
         this.s3Client = AmazonS3ClientBuilder.standard()
                 .withRegion(regions)
@@ -24,13 +26,39 @@ public class BucketHelper implements IDataObjectHelper{
 
 
     public String createObject(String objectUrl, String filePath){
-        if(bucket == null){
-            return createBucket(objectUrl); // verify params
+        if (s3Client.doesBucketExistV2(bucketName)) {
+            System.out.format("Bucket %s already exists.\n", bucketName);
+        } else {
+            try {
+                s3Client.createBucket(bucketName);
+            } catch (Exception e) {
+                System.err.println(e.getLocalizedMessage());
+            }
         }
-        if(object == null){
-            return createObject(objectUrl, filePath); // verify params
+        if (s3Client.doesObjectExist(bucketName, objectUrl)) {
+            System.out.format("Object %s already exists.\n", objectUrl);
+        } else {
+            try {
+                s3Client.putObject(bucketName, objectUrl, filePath);
+            } catch (Exception e) {
+                System.err.println(e.getLocalizedMessage());
+            }
         }
-        return "bucket and object already exist";
+        return "Object created in bucket " + bucketName + " with key " + objectUrl;
+    }
+
+    public String deleteObject(String objectUrl){
+        if (s3Client.doesObjectExist(bucketName, objectUrl)) {
+            try {
+                s3Client.deleteObject(bucketName, objectUrl);
+            } catch (Exception e) {
+                System.err.println(e.getLocalizedMessage());
+            }
+        } else {
+            System.out.format("Object %s does not exist.\n", objectUrl);
+            return "Object does not exist";
+        }
+        return "Object deleted from bucket " + bucketName + " with key " + objectUrl;
     }
 
 

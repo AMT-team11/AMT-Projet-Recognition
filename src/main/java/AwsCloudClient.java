@@ -21,4 +21,8 @@ public class AwsCloudClient implements ICloudClient{
         }
         return instance;
     }
+
+    public void deleteObject(String objectUrl){
+        this.dataObjectHelper.deleteObject(objectUrl);
+    }
 }

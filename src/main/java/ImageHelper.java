@@ -53,6 +53,7 @@ public class ImageHelper implements ILabelDetectorHelper {
                 System.out.println(label.getName() + ": " + label.getConfidence().toString());
             // Uploads the result json to the bucket if the analysis is not yet on the bucket
             if (!s3Client.doesObjectExist(bucketName, imageUri + "RekognitionAnalysis.json")) {
+                System.out.println("Uploading the result json to the bucket");
                 String json = Jackson.toJsonString(labels);
                 InputStream is = new ByteArrayInputStream(json.getBytes());
                 ObjectMetadata metadata = new ObjectMetadata();

@@ -4,6 +4,7 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.Bucket;
 import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.amazonaws.services.s3.model.S3Object;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
@@ -47,14 +48,33 @@ public class BucketHelper implements IDataObjectHelper{
                 InputStream is = new java.io.ByteArrayInputStream(bI);
                 ObjectMetadata metadata = new ObjectMetadata();
                 metadata.setContentLength(bI.length);
+                switch (getFileExtension(filePath)) {
+                    case "png":
+                        metadata.setContentType("image/png");
+                        break;
+                    case "jpg":
+                        metadata.setContentType("image/jpeg");
+                        break;
+                    default:
+                        return "File type not supported";
+                }
                 metadata.setContentType("image/jpeg");
                 metadata.setCacheControl("public, max-age=31536000");
-                s3Client.putObject(bucketName, objectUrl + ".jpg", is, metadata);
+                s3Client.putObject(bucketName, objectUrl, is, metadata);
             } catch (Exception e) {
                 System.err.println(e.getLocalizedMessage());
             }
         }
         return "Object created in bucket " + bucketName + " with key " + objectUrl;
+    }
+
+    private String getFileExtension(String fileName) {
+        String extension = "";
+        int i = fileName.lastIndexOf('.');
+        if (i > 0) {
+            extension = fileName.substring(i+1);
+        }
+        return extension;
     }
 
     public String deleteObject(String objectUrl){
@@ -69,5 +89,23 @@ public class BucketHelper implements IDataObjectHelper{
             return "Object does not exist";
         }
         return "Object deleted from bucket " + bucketName + " with key " + objectUrl;
+    }
+
+    public String downloadObject(String objectUrl, String filePath){
+        if (s3Client.doesObjectExist(bucketName, objectUrl)) {
+            try {
+                S3Object obj = s3Client.getObject(bucketName, objectUrl);
+                InputStream is = obj.getObjectContent();
+                FileUtils.copyInputStreamToFile(is, new File(filePath));
+            } catch (Exception e) {
+                System.err.println(e.getLocalizedMessage());
+                return "Error downloading object";
+
+            }
+        } else {
+            System.out.format("Object %s does not exist.\n", objectUrl);
+            return "Object does not exist";
+        }
+        return "Object downloaded from bucket " + bucketName + " with key " + objectUrl;
     }
 }

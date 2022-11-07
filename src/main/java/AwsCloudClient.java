@@ -4,11 +4,13 @@ public class AwsCloudClient implements ICloudClient{
     private final BucketHelper dataObjectHelper;
     private static AwsCloudClient instance;
 
+    private ImageHelper imageHelper;
+
     AwsCloudClient(){
         Regions regions = Regions.EU_WEST_2;
         String profile = "default";
-        this.dataObjectHelper = new BucketHelper(regions, profile);
-        ImageHelper labelDetectorHelper = new ImageHelper(regions, profile);
+        dataObjectHelper = new BucketHelper(regions, profile);
+        imageHelper = new ImageHelper(regions, profile);
     }
 
     public static AwsCloudClient getInstance(){
@@ -27,6 +29,10 @@ public class AwsCloudClient implements ICloudClient{
     }
 
     public void detectLabels(String imageUri, int maxLabels, float minConfidence){
-        this.labelDetectorHelper.MakeAnalysisRequest(imageUri,maxLabels, minConfidence);
+        this.imageHelper.MakeAnalysisRequest(imageUri,maxLabels, minConfidence);
+    }
+
+    public void downloadObject(String objectUrl, String filePath){
+        this.dataObjectHelper.downloadObject(objectUrl, filePath);
     }
 }

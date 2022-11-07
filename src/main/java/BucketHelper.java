@@ -24,7 +24,6 @@ public class BucketHelper implements IDataObjectHelper{
         this.s3Client = AmazonS3ClientBuilder.standard().withRegion(Regions.EU_WEST_2).build();
     }
 
-
     public String createObject(String objectUrl, String filePath){
         if (s3Client.doesBucketExistV2(bucketName)) {
             System.out.format("Bucket %s already exists.\n", bucketName);

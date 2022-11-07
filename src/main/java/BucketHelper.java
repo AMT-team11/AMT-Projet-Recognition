@@ -59,16 +59,4 @@ public class BucketHelper implements IDataObjectHelper{
         }
         return "Object deleted from bucket " + bucketName + " with key " + objectUrl;
     }
-
-
-
-    public String createBucket(String bucketUrl){
-        this.bucket = s3Client.listBuckets().stream().filter(b -> b.getName().equals(bucketUrl)).findFirst().get();
-        return "bucket created";
-    }
-
-    public String createObject(String ObjectUrl, Base64 dataRow){
-        this.object = s3Client.getObject(bucket.getName(), ObjectUrl);
-        return "object created";
-    }
 }

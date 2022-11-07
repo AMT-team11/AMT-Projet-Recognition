@@ -25,4 +25,12 @@ public class AwsCloudClient implements ICloudClient{
     public void deleteObject(String objectUrl){
         this.dataObjectHelper.deleteObject(objectUrl);
     }
+
+    public void createObject(String objectUrl, String filePath){
+        this.dataObjectHelper.createObject(objectUrl, filePath);
+    }
+
+    public void detectLabels(String imageUri, int maxLabels, float minConfidence){
+        this.labelDetectorHelper.MakeAnalysisRequest(imageUri,maxLabels, minConfidence);
+    }
 }

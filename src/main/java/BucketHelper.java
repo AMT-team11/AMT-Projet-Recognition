@@ -3,7 +3,11 @@ import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.Bucket;
+import com.amazonaws.services.s3.model.ObjectMetadata;
+import org.apache.commons.io.FileUtils;
 
+import java.io.File;
+import java.io.InputStream;
 import java.util.Base64;
 
 public class BucketHelper implements IDataObjectHelper{
@@ -38,7 +42,14 @@ public class BucketHelper implements IDataObjectHelper{
             System.out.format("Object %s already exists.\n", objectUrl);
         } else {
             try {
-                s3Client.putObject(bucketName, objectUrl, filePath);
+                byte[] bI = Base64.getDecoder().decode(Base64.getEncoder()
+                        .encodeToString(FileUtils.readFileToByteArray(new File(filePath))));
+                InputStream is = new java.io.ByteArrayInputStream(bI);
+                ObjectMetadata metadata = new ObjectMetadata();
+                metadata.setContentLength(bI.length);
+                metadata.setContentType("image/jpeg");
+                metadata.setCacheControl("public, max-age=31536000");
+                s3Client.putObject(bucketName, objectUrl + ".jpg", is, metadata);
             } catch (Exception e) {
                 System.err.println(e.getLocalizedMessage());
             }

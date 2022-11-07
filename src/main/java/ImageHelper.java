@@ -8,8 +8,12 @@ import com.amazonaws.services.rekognition.model.Image;
 import com.amazonaws.services.rekognition.model.Label;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
+import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.S3Object;
+import com.amazonaws.util.json.Jackson;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.util.List;
 
 public class ImageHelper implements ILabelDetectorHelper {
@@ -41,11 +45,22 @@ public class ImageHelper implements ILabelDetectorHelper {
                 .withMaxLabels(maxLabels)
                 .withMinConfidence(minConfidence);
         try {
+            // Detects labels in the S3 object
             DetectLabelsResult result = rekognitionClient.detectLabels(request);
             List<Label> labels = result.getLabels();
             System.out.println("Detected labels for " + imageUri);
             for (Label label: labels)
                 System.out.println(label.getName() + ": " + label.getConfidence().toString());
+            // Uploads the result json to the bucket if the analysis is not yet on the bucket
+            if (!s3Client.doesObjectExist(bucketName, imageUri + "RekognitionAnalysis.json")) {
+                String json = Jackson.toJsonString(labels);
+                InputStream is = new ByteArrayInputStream(json.getBytes());
+                ObjectMetadata metadata = new ObjectMetadata();
+                metadata.setContentLength(json.getBytes().length);
+                metadata.setContentType("application/json");
+                metadata.setCacheControl("public, max-age=31536000");
+                s3Client.putObject(bucketName, imageUri + "RekognitionAnalysis.json", is, metadata);
+            }
         } catch (Exception e) {
             System.err.println(e.getLocalizedMessage());
             return "Error";

@@ -1,3 +1,4 @@
+import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.Bucket;
@@ -22,7 +23,6 @@ public class BucketManip {
         for (Bucket b : buckets) {
             //System.out.println("* " + b.getName());
         }
-
         ObjectListing objectListing = s3.listObjects("amt.team11.diduno.education");
         objectListing.getObjectSummaries().forEach(o -> System.out.println(o.getKey()));
     }

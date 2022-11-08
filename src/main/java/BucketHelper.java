@@ -5,6 +5,8 @@ import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.Bucket;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.S3Object;
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
@@ -16,6 +18,8 @@ public class BucketHelper implements IDataObjectHelper{
     private Object object;
     private final AmazonS3 s3Client;
 
+    @Setter
+    @Getter
     private String bucketName = "amt.team11.diduno.education";
 
     BucketHelper(Regions regions, String profile){
@@ -48,6 +52,8 @@ public class BucketHelper implements IDataObjectHelper{
                 InputStream is = new java.io.ByteArrayInputStream(bI);
                 ObjectMetadata metadata = new ObjectMetadata();
                 metadata.setContentLength(bI.length);
+
+                // Checks if the file to upload is an image with the right extension
                 switch (getFileExtension(filePath)) {
                     case "png":
                         metadata.setContentType("image/png");

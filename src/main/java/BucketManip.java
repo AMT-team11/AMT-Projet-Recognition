@@ -22,7 +22,6 @@ public class BucketManip {
         for (Bucket b : buckets) {
             //System.out.println("* " + b.getName());
         }
-
         ObjectListing objectListing = s3.listObjects("amt.team11.diduno.education");
         objectListing.getObjectSummaries().forEach(o -> System.out.println(o.getKey()));
     }

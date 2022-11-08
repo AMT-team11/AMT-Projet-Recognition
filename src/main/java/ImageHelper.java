@@ -11,6 +11,8 @@ import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.util.json.Jackson;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -22,6 +24,8 @@ public class ImageHelper implements ILabelDetectorHelper {
 
     private AmazonRekognition rekognitionClient;
 
+    @Getter
+    @Setter
     private String bucketName = "amt.team11.diduno.education";
 
     ImageHelper(Regions regions, String profile){
@@ -48,9 +52,6 @@ public class ImageHelper implements ILabelDetectorHelper {
             // Detects labels in the S3 object
             DetectLabelsResult result = rekognitionClient.detectLabels(request);
             List<Label> labels = result.getLabels();
-            System.out.println("Detected labels for " + imageUri);
-            for (Label label: labels)
-                System.out.println(label.getName() + ": " + label.getConfidence().toString());
             // Uploads the result json to the bucket if the analysis is not yet on the bucket
             if (!s3Client.doesObjectExist(bucketName, imageUri + "RekognitionAnalysis.json")) {
                 System.out.println("Uploading the result json to the bucket");

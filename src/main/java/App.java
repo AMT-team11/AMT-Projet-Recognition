@@ -1,5 +1,4 @@
 import com.amazonaws.regions.Regions;
-import com.amazonaws.services.s3.model.Bucket;
 
 import static java.lang.System.exit;
 
@@ -26,6 +25,9 @@ public class App {
             client.refreshHelpers();
             client.selectBucket(bucket);
             switch (operation) {
+                case "bucket-content":
+                    client.listBucketContent();
+                    break;
                 case "create":
                     if (args.length < 6) {
                         System.out.println("Please provide a file path to upload and a key on the bucket.");

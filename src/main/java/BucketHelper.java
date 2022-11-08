@@ -3,6 +3,7 @@ import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.Bucket;
+import com.amazonaws.services.s3.model.ObjectListing;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.S3Object;
 import lombok.Getter;
@@ -113,5 +114,10 @@ public class BucketHelper implements IDataObjectHelper{
             return "Object does not exist";
         }
         return "Object downloaded from bucket " + bucketName + " with key " + objectUrl;
+    }
+
+    public void listeBucketContent() {
+        ObjectListing objectListing = s3Client.listObjects(bucketName);
+        objectListing.getObjectSummaries().forEach(o -> System.out.println(o.getKey()));
     }
 }

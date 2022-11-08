@@ -35,11 +35,18 @@ posséder l'extension `.jpg` ou `.png`.
 
 ## Utilisation
 
-Afin d'utiliser notre App, il faut lancer la commande suivante :
+Afin d'utiliser notre App sur votre machine, il faut lancer la commande suivante :
+### Génération d'un jar exécutable
+```bash
+mvn package
+```
+Vous trouverez le jar généré dans le dossier `target/` du projet. Notez que vous retrouverez deux fichiers jar, un
+contenant les dépendances du projet et un autre ne contenant que le code source.
+
+### Compilation et exécution sur la même machine via maven
 ```bash
 mvn compile exec:java
 ```
-
 Sachant que les arguments à passer sont à changer dans le fichier pom.xml. Pour modifier les arguments, il faut les
 changer dans la partie `<build>` du fichier `pom.xml`. Trouvez le plugin `exec-maven-plugin` et modifiez les arguments
 et sous la balise `<configuration>`, vous trouverez les `<arguments>`, c'est à cet endroit qu'il vous faut ajouter 
@@ -51,12 +58,17 @@ nom du bucket sur lequel les opérations sont effectuées. Ils sont donc obligat
 
 Comme notre app permet de faire différentes opérations, le quatrième argument doit être l'opération à effectuer. Les
 opérations possibles sont :
+- `bucket-content` : permet d'afficher le contenu du bucket
 - `create` : permet d'uploader une image sur le bucket
 - `delete` : permet de supprimer une image du bucket
 - `detect-labels` : permet d'analyser une image et de récupérer les labels de celle-ci
 - `download` : permet de télécharger un objet du bucket
 
 Ensuite, en fonction de l'opération choisie, il faut ajouter les arguments nécessaires à l'opération.
+
+### Opération `bucket-content`
+Cette opération permet d'afficher le contenu du bucket. Elle ne prend aucun argument supplémentaire. Elle s'avère
+utile pour vérifier que les images ont bien été créées/effacées.
 
 ### Opération `create`
 Cette opération permet d'uploader une image sur le bucket. Pour cela, il faut ajouter l'argument `create` et ajouter
@@ -165,4 +177,34 @@ Dans votre fichier ajoutez les arguments comme indiqué plus haut dans le fichie
     <argument>cle</argument>
     <argument>chemin/destination/file.jpg</argument>
 </arguments>
+```
+
+### Exécution du fichier jar
+
+L'utilisation de l'exécutable tel quel est semblable aux points cités dessus.
+Placez-vous à l'endroit ou vous avez téléchargé le fichier jar et exécutez la commande suivante :
+```bash
+java -jar <nom_du_fichier>.jar <profile_name> <region> <bucket_name> <operation> <arguments>
+```
+
+Par exemple si vous souhaitez créer une image, l'uploader, l'analyser et télécharger le fichier de résultat, vous pouvez
+exécuter les commandes suivantes :
+```bash
+java -jar <nom_du_fichier>.jar <profile_name> <region> <bucket_name> create <chemin/image/file.jpg/png> <cle>
+```
+```bash
+java -jar <nom_du_fichier>.jar <profile_name> <region> <bucket_name> detect-labels <cle> <nombre_labels> <confidence_minimale>
+```
+```bash
+java -jar <nom_du_fichier>.jar <profile_name> <region> <bucket_name> download <cle> <chemin/destination/file.json>
+```
+
+Si vous souhaitez supprimer les objets créés, vous pouvez exécuter la commande suivante :
+```bash
+java -jar <nom_du_fichier>.jar <profile_name> <region> <bucket_name> delete <cle>
+```
+
+Si vous souhaitez vérifier que vos objets ont bien été créés, vous pouvez exécuter la commande suivante :
+```bash
+java -jar <nom_du_fichier>.jar <profile_name> <region> <bucket_name> bucket-content
 ```

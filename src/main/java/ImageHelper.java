@@ -19,10 +19,8 @@ import java.io.InputStream;
 import java.util.List;
 
 public class ImageHelper implements ILabelDetectorHelper {
-
-    private AmazonS3 s3Client;
-
-    private AmazonRekognition rekognitionClient;
+    private final AmazonS3 s3Client;
+    private final AmazonRekognition rekognitionClient;
 
     @Getter
     @Setter
@@ -54,7 +52,8 @@ public class ImageHelper implements ILabelDetectorHelper {
             List<Label> labels = result.getLabels();
             // Uploads the result json to the bucket if the analysis is not yet on the bucket
             if (!s3Client.doesObjectExist(bucketName, imageUri + "RekognitionAnalysis.json")) {
-                System.out.println("Uploading the result json to the bucket");
+                System.out.println("Uploading the result json to the bucket with key "
+                        + imageUri + "RekognitionAnalysis.json");
                 String json = Jackson.toJsonString(labels);
                 InputStream is = new ByteArrayInputStream(json.getBytes());
                 ObjectMetadata metadata = new ObjectMetadata();
@@ -69,6 +68,4 @@ public class ImageHelper implements ILabelDetectorHelper {
         }
         return "Success";
     }
-
-    
 }

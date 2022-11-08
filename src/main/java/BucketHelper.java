@@ -54,7 +54,7 @@ public class BucketHelper implements IDataObjectHelper{
                 metadata.setContentLength(bI.length);
 
                 // Checks if the file to upload is an image with the right extension
-                switch (getFileExtension(filePath)) {
+                switch (getFileExtension(filePath).toLowerCase()) {
                     case "png":
                         metadata.setContentType("image/png");
                         break;

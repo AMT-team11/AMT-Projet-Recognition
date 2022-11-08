@@ -23,7 +23,7 @@ public class BucketManipTest {
     @Test
     public void createObject() {
         String objectUrl = "test";
-        client.createObject(objectUrl, "./src/main/resources/1643262960000.jpg");
+        client.createObject(objectUrl, "./src/main/resources/test_image.png");
         ObjectListing objectListing = s3.listObjects(client.getSelectedBucket());
         StringBuilder sb = new StringBuilder();
         objectListing.getObjectSummaries().forEach(o -> sb.append(o.getKey()));
@@ -61,5 +61,10 @@ public class BucketManipTest {
         assert(new File("./src/main/resources/download.jpg").exists());
         client.deleteObject(objectUrl);
         new File("./src/main/resources/download.jpg").delete();
+    }
+
+    @Test
+    public void checkJSONAnalysis() {
+
     }
 }

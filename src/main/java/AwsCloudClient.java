@@ -57,7 +57,5 @@ public class AwsCloudClient implements ICloudClient{
         return dataObjectHelper.getBucketName();
     }
 
-    public void listBucketContent() {
-        this.dataObjectHelper.listeBucketContent();
-    }
+
 }

@@ -26,7 +26,7 @@ public class App {
             client.selectBucket(bucket);
             switch (operation) {
                 case "bucket-content":
-                    client.listBucketContent();
+                    //client.listBucketContent();
                     break;
                 case "create":
                     if (args.length < 6) {

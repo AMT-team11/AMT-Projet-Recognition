@@ -7,11 +7,16 @@ import org.junit.jupiter.api.Test;
 
 import java.io.File;
 
+//TODO REVIEW Issue -> Where is the .gitignore (target, .idea is listen by git)
+//TODO REVIEW Issue -> Impossible to run test "Error running bucketmanip" -> Shorten the commands and try again"
+//TODO REVIEW Remove all AWS dependencies from your test class
 import static com.amazonaws.regions.Regions.EU_WEST_2;
 
 public class BucketManipTest {
     AwsCloudClient client = AwsCloudClient.getInstance();
+    //TODO REVIEW The test class shouldn't use AWS class directly
     AmazonS3 s3;
+    //TODO REVIEW Before each, all or class ?
     @BeforeEach
     public void refreshHelpers() {
         client.refreshHelpers();
@@ -21,6 +26,7 @@ public class BucketManipTest {
         client.selectBucket("amt.team11.diduno.education");
     }
     @Test
+    //TODO REVIEW Rename the test signature. method + scenario + expected result
     public void createObject() {
         String objectUrl = "test";
         client.createObject(objectUrl, "./src/main/resources/test_image.png");
@@ -31,6 +37,7 @@ public class BucketManipTest {
         client.deleteObject(objectUrl);
     }
 
+    //TODO REVIEW On case, on feature. Please split this test cast in two test case.
     @Test
     public void createAndDeleteObject() {
         createObject();
@@ -40,6 +47,7 @@ public class BucketManipTest {
         assert(!sb.toString().contains("test"));
     }
 
+    //TODO REVIEW Move test cases for analysis object in its own test class
     @Test
     public void createAndAnalyseObject() {
         String objectUrl = "test";
@@ -65,6 +73,6 @@ public class BucketManipTest {
 
     @Test
     public void checkJSONAnalysis() {
-
+        //TODO REVIEW Purpose of this test method ?
     }
 }

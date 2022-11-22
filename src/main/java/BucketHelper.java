@@ -55,6 +55,7 @@ public class BucketHelper implements IDataObjectHelper{
                 metadata.setContentLength(bI.length);
 
                 // Checks if the file to upload is an image with the right extension
+                //TODO REVIEW Prefer to use MIME.TYPE as extension (user input)
                 switch (getFileExtension(filePath).toLowerCase()) {
                     case "png":
                         metadata.setContentType("image/png");
@@ -105,17 +106,20 @@ public class BucketHelper implements IDataObjectHelper{
                 InputStream is = obj.getObjectContent();
                 FileUtils.copyInputStreamToFile(is, new File(filePath));
             } catch (Exception e) {
+                //TODO REVIEW Do not catch the whole world ! Be more specific.
                 System.err.println(e.getLocalizedMessage());
                 return "Error downloading object";
 
             }
         } else {
+            //TODO REVIEW Log this info, but do not use prompt display
             System.out.format("Object %s does not exist.\n", objectUrl);
             return "Object does not exist";
         }
         return "Object downloaded from bucket " + bucketName + " with key " + objectUrl;
     }
 
+    //TODO REVIEW Remove all Bucket mentions in your public method. Everything is an Object.
     public void listeBucketContent() {
         ObjectListing objectListing = s3Client.listObjects(bucketName);
         objectListing.getObjectSummaries().forEach(o -> System.out.println(o.getKey()));

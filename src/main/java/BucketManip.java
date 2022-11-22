@@ -1,3 +1,4 @@
+//TODO REVIEW Remove unused import statement
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
@@ -13,6 +14,7 @@ import java.util.List;
 
 import static com.amazonaws.regions.Regions.EU_WEST_2;
 
+//TODO REVIEW Purpose of this class ?
 public class BucketManip {
     public static void main(String[] args) throws IOException {
 

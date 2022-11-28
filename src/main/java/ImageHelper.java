@@ -9,7 +9,7 @@ import com.amazonaws.services.rekognition.model.Label;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.amazonaws.services.s3.model.S3Object;
+import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.util.json.Jackson;
 import lombok.Getter;
 import lombok.Setter;
@@ -17,10 +17,13 @@ import lombok.Setter;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.List;
+import java.util.logging.Logger;
 
 public class ImageHelper implements ILabelDetectorHelper {
     private final AmazonS3 s3Client;
     private final AmazonRekognition rekognitionClient;
+
+    static final Logger log = Logger.getLogger(BucketHelper.class.getName());
 
     @Getter
     @Setter
@@ -37,7 +40,6 @@ public class ImageHelper implements ILabelDetectorHelper {
                 .build();
     }
 
-    // TODO : uploader le resultat json dans le bucket
     public String MakeAnalysisRequest(String imageUri, int maxLabels, float minConfidence) {
         DetectLabelsRequest request = new DetectLabelsRequest()
                 .withImage(new Image()
@@ -47,12 +49,12 @@ public class ImageHelper implements ILabelDetectorHelper {
                 .withMaxLabels(maxLabels)
                 .withMinConfidence(minConfidence);
         try {
-            // Detects labels in the S3 object
             DetectLabelsResult result = rekognitionClient.detectLabels(request);
             List<Label> labels = result.getLabels();
+            // TODO : uploader le résultat json dans le bucket
             // Uploads the result json to the bucket if the analysis is not yet on the bucket
             if (!s3Client.doesObjectExist(bucketName, imageUri + "RekognitionAnalysis.json")) {
-                System.out.println("Uploading the result json to the bucket with key "
+                log.info("Uploading the result json to the bucket with key "
                         + imageUri + "RekognitionAnalysis.json");
                 String json = Jackson.toJsonString(labels);
                 InputStream is = new ByteArrayInputStream(json.getBytes());
@@ -64,8 +66,22 @@ public class ImageHelper implements ILabelDetectorHelper {
             }
         } catch (Exception e) {
             System.err.println(e.getLocalizedMessage());
-            return "Error";
+            return e.getMessage();
         }
         return "Success";
+    }
+
+    // TODO la requête d'analyse lance une exception indiquant un mauvais format -> adapter cette méthode ou l'autre pour gérer tout type de format
+    public String MakeAnalysisRequestWithImage64(byte[] image64, String imageUri, int maxLabels, float minConfidence) {
+        ObjectMetadata metadata = new ObjectMetadata();
+        metadata.setContentLength(image64.length);
+        metadata.setContentType("image/png");
+        PutObjectRequest request = new PutObjectRequest(
+                bucketName,
+                imageUri,
+                new ByteArrayInputStream(image64),
+                metadata);
+        s3Client.putObject(request);
+        return MakeAnalysisRequest(imageUri, maxLabels, minConfidence);
     }
 }

@@ -66,19 +66,10 @@ public class BucketHelper implements IDataObjectHelper{
                 // Checks if the file to upload is an image with the right extension
                 // todo REVIEW Prefer to use MIME.TYPE as extension (user input)
                 String mimetype = Files.probeContentType(Path.of(filePath));
-                switch(mimetype){
-                    case "image/jpeg":
-                        metadata.setContentType("image/jpeg");
-                        break;
-                    case "image/png":
-                        metadata.setContentType("image/png");
-                        break;
-                    default:
-                        System.out.println("Wrong file type");
-                        return null;
+                if (mimetype == null || !mimetype.startsWith("image/")) {
+                    return "Invalid file type";
                 }
-
-                metadata.setContentType("image/jpeg");
+                metadata.setContentType(mimetype);
                 metadata.setCacheControl("public, max-age=31536000");
                 s3Client.putObject(bucketName, objectUrl, is, metadata);
             } catch (SdkClientException | IOException e) {
@@ -109,6 +100,23 @@ public class BucketHelper implements IDataObjectHelper{
             return "Object does not exist";
         }
         return "Object deleted from bucket " + bucketName + " with key " + objectUrl;
+    }
+
+    @Override
+    public Boolean doesObjectExist(String objectUrl) {
+        return s3Client.doesObjectExist(bucketName, objectUrl);
+    }
+
+    @Override
+    public byte[] downloadObject(String objectUrl) {
+        S3Object s3Object = s3Client.getObject(bucketName, objectUrl);
+        byte[] dl = null;
+        try {
+            dl = s3Object.getObjectContent().readAllBytes();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return dl;
     }
 
     public String downloadObject(String objectUrl, String filePath){

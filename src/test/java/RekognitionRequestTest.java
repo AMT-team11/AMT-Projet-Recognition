@@ -47,7 +47,8 @@ public class RekognitionRequestTest {
     public void MakeAnalysisRequestWithImage64_Should_CreateJSONAnalysis() {
         byte[] image64 = {};
         try {
-            image64 = Base64.getEncoder().encode(FileUtils.readFileToByteArray(new File(imageTestPath)));
+            image64 = Base64.getDecoder().decode(Base64.getEncoder()
+                    .encodeToString(FileUtils.readFileToByteArray(new File(imageTestPath))));
         } catch (IOException e) {
             System.err.println(e.getLocalizedMessage());
         }
@@ -62,7 +63,6 @@ public class RekognitionRequestTest {
         float minConfidence = 0.5f;
         client.makeAnalysisRequest(objectUri, maxLabels, minConfidence);
         client.downloadObject(objectUri + "RekognitionAnalysis.json", dlPath + "download.json");
-        // Read JSON file with Jackson
         try {
             String json = Files.readString(Paths.get(dlPath + "download.json"));
             ObjectNode[] v = Jackson.fromJsonString(json, ObjectNode[].class);

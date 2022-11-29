@@ -54,7 +54,7 @@ public class BucketHelper implements IDataObjectHelper{
             }
         }
         if (s3Client.doesObjectExist(bucketName, objectUrl)) {
-            System.out.format("Object %s already exists.\n", objectUrl);
+            log.info("Object " + objectUrl + " already exists.\n");
         } else {
             try {
                 byte[] bI = Base64.getDecoder().decode(Base64.getEncoder()

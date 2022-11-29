@@ -8,6 +8,7 @@ import com.amazonaws.services.rekognition.model.Image;
 import com.amazonaws.services.rekognition.model.Label;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
+import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.util.json.Jackson;
@@ -74,12 +75,14 @@ public class ImageHelper implements ILabelDetectorHelper {
     // TODO la requête d'analyse lance une exception indiquant un mauvais format -> adapter cette méthode ou l'autre pour gérer tout type de format
     public String MakeAnalysisRequestWithImage64(byte[] image64, String imageUri, int maxLabels, float minConfidence) {
         ObjectMetadata metadata = new ObjectMetadata();
+        InputStream fis = new ByteArrayInputStream(image64);
         metadata.setContentLength(image64.length);
         metadata.setContentType("image/png");
+        metadata.setCacheControl("public, max-age=31536000");
         PutObjectRequest request = new PutObjectRequest(
                 bucketName,
                 imageUri,
-                new ByteArrayInputStream(image64),
+                fis,
                 metadata);
         s3Client.putObject(request);
         return MakeAnalysisRequest(imageUri, maxLabels, minConfidence);

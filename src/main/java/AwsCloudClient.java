@@ -57,7 +57,15 @@ public class AwsCloudClient implements ICloudClient{
         return dataObjectHelper.getBucketName();
     }
 
-    public void listBucketContent() {
-        this.dataObjectHelper.listeBucketContent();
+    public Boolean doesObjectExist(String objectUrl){
+        return this.dataObjectHelper.doesObjectExist(objectUrl);
+    }
+
+    public void makeAnalysisRequest(String imageUri, int maxLabels, float minConfidence) {
+        this.imageHelper.MakeAnalysisRequest(imageUri, maxLabels, minConfidence);
+    }
+
+    public void makeAnalysisRequestWithImage64(String objectUri, byte[] b64Image, int maxLabels, float minConfidence) {
+        this.imageHelper.MakeAnalysisRequestWithImage64(b64Image, objectUri, maxLabels, minConfidence);
     }
 }

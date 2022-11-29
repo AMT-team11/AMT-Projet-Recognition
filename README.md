@@ -13,9 +13,13 @@ Amazon Rekognition sur cette même image. L'analyse est ensuite stockée sur le 
 - AWS CLI 2.2.37
 
 Notre repository se base sur un projet maven, il est donc nécessaire d'avoir maven d'installé sur votre machine.
-Une fois maven installé, il faut lancer la commande suivante pour installer les dépendances du projet :
+Une fois maven installé, on peut lancer la commande suivante pour installer les dépendances du projet (en ajoutant 
+l'option -DskipTests cela permet de ne pas lancer les tests unitaires).
+
+> TODO votre commande run les tests ce qui n'est pas désirable à cette étape
+
 ```bash
-mvn install
+mvn install -DskipTests
 ```
 
 ### Configuration
@@ -33,9 +37,28 @@ Notez que si vous fournissez un profil AWS n'existant pas, le programme charge l
 Les images à ajouter sur le bucket peuvent être placées dans le dossier `src/main/resources/` du projet et doivent
 posséder l'extension `.jpg` ou `.png`.
 
+## Run les tests
+Pour lancer les tests unitaires, il suffit de lancer la commande suivante :
+```bash
+mvn test
+```
+Cette commande lance donc tous les tests unitaires. Pour lancer une classe de test spécifique, il suffit
+de lancer la commande suivante :
+```bash
+mvn test -Dtest=<nom_de_la_classe_de_test>
+```
+Pour lancer un test unitaire spécifique, il est possible d'utiliser la commande suivante :
+```bash
+mvn test -Dtest=<nom_de_la_classe_de_test>#<nom_du_test>
+```
+
+
 ## Utilisation
 
 Afin d'utiliser notre App sur votre machine, il faut lancer la commande suivante :
+
+> TODO on attendait une étape séparée du rest pour run les tests avec la commande pour tout run + la commande pour run un test en particulier.
+
 ### Génération d'un jar exécutable
 ```bash
 mvn package
@@ -208,3 +231,13 @@ Si vous souhaitez vérifier que vos objets ont bien été créés, vous pouvez e
 ```bash
 java -jar <nom_du_fichier>.jar <profile_name> <region> <bucket_name> bucket-content
 ```
+
+## Misc
+
+> TODO vos conventions de nommage ne spécifier rien au sujet du code
+
+> TODO pour les choix technologiques précisez  version de JAVA et du SDK java AWS ainsi que pourquoi vous les avez choisit.
+
+> TODO vos choix technologiques ne parlent pas de la version de Java
+
+> TODO aucun tests sur la partie label detection

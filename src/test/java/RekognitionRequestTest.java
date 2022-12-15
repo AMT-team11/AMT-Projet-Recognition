@@ -37,7 +37,7 @@ public class RekognitionRequestTest {
     }
 
     @Test
-    public void makeAnalysisRequest_Should_CreateJSONAnalysis() {
+    public void makeAnalysisRequest_WhenObjectExisting_Should_CreateJSONAnalysis() {
         client.createObject(objectUri, imageTestPath);
         client.makeAnalysisRequest(objectUri, 10, 0.5f);
         assert(client.doesObjectExist(objectUri + "RekognitionAnalysis.json"));
@@ -73,6 +73,5 @@ public class RekognitionRequestTest {
         } catch (IOException e) {
             System.err.println(e.getLocalizedMessage());
         }
-
     }
 }

@@ -32,20 +32,20 @@ public class BucketManipTest {
 
     @Test
     // TODO REVIEW Rename the test signature. method + scenario + expected result
-    public void createObject_Should_MakeObjectExist() {
+    public void Given_createObject_When_ObjectDoesntExist_Then_ObjectExist() {
         client.createObject(objectUri, imageTestPath);
         assert(client.doesObjectExist(objectUri));
     }
 
     //TODO REVIEW On case, on feature. Please split this test cast in two test case.
     @Test
-    public void deleteObject_Should_MakeObjectNotExist() {
+    public void Given_deleteObject_When_ObjectDoesntExist_Then_ObjectNotExist() {
         client.deleteObject(objectUri);
         assert(!client.doesObjectExist(objectUri));
     }
 
     @Test
-    public void downloadObject_Should_CreateAFileAtWantedLocation() {
+    public void Given_downloadObject_When_ObjectExist_Then_FileExist() {
         client.createObject(objectUri, objectUri);
         client.downloadObject(objectUri,  dlPath + "download.jpg");
         assert(new File(dlPath + "download.jpg").exists());

@@ -35,16 +35,14 @@ public class RekognitionRequestTest {
         client.deleteObject(objectUri);
         client.deleteObject(objectUri + "RekognitionAnalysis.json");
     }
-
     @Test
-    public void makeAnalysisRequest_WhenObjectExisting_Should_CreateJSONAnalysis() {
+    public void Given_makeAnalysisObject_When_ObjectToAnalyseExist_Then_AnalysisJSONExist() {
         client.createObject(objectUri, imageTestPath);
         client.makeAnalysisRequest(objectUri, 10, 0.5f);
         assert(client.doesObjectExist(objectUri + "RekognitionAnalysis.json"));
     }
-
     @Test
-    public void MakeAnalysisRequestWithImage64_Should_CreateJSONAnalysis() {
+    public void Given_makeAnalysisObject_When_GivingObjectAsImageb63_Then_AnalysisJSONExist() {
         byte[] image64 = {};
         try {
             image64 = Base64.getDecoder().decode(Base64.getEncoder()
@@ -57,7 +55,7 @@ public class RekognitionRequestTest {
     }
 
     @Test
-    public void makeAnalysisRequest_Should_CreateJSONFileWithCoherentValues() {
+    public void Given_makeAnalysisObject_When_ObjectToAnalyseExist_Then_AnalysisJSONExist_ShouldHaveCorrectContent() {
         //TODO REVIEW Purpose of this test method ?
         int maxLabels = 10;
         float minConfidence = 0.5f;
